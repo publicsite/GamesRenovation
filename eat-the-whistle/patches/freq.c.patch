@@ -1,0 +1,23 @@
+--- a/etw-3.6/freq.c	2007-10-14 22:53:26.000000000 +0100
++++ b/etw-3.6/freq.c	2022-10-20 02:17:35.320791000 +0100
+@@ -132,7 +132,7 @@
+ {
+     strcpy(fs->ofn->File,
+            gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs->fs)));
+-    D(bug("Selected: %s\n", fs->ofn->File));
++    printf("Selected: %s\n", fs->ofn->File);
+     gtk_widget_destroy(fs->fs);
+     fs->success = 1;
+     gtk_main_quit();
+@@ -186,9 +186,9 @@
+     gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(fs.fs));
+     gtk_widget_show(fs.fs);
+ 
+-    D(bug("Open freq...\n"));
++    printf("Open freq...\n");
+     gtk_main();
+-    D(bug("Closed filereq...(%d)\n", fs.success));
++    printf("Closed filereq...(%d)\n", fs.success);
+     return fs.success;
+ }
+ 

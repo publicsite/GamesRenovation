@@ -1,0 +1,56 @@
+https://en.wikipedia.org/wiki/List_of_commercial_video_games_with_later_released_source_code#Open_engine_and_game_data
+
+Blades of Exile		http://www.spiderwebsoftware.com/blades/opensource.html
+CLONK		http://www.clonk.de/developer.php?lng=en	http://www.clonk.de/source.php
+Interactive Fiction		http://www.ifarchive.org/indexes/if-archiveXgamesXsource.html
+cylindrix		https://github.com/hyperlogic/cylindrix
+cytadela		https://cytadela.sourceforge.net/
+Eat the whistle		https://sourceforge.net/projects/etw/	http://www.ggsoft.org/etw/
+Escape Towards The Unknown 	https://sourceforge.net/projects/ettu/
+Fish Fillets		https://fillets.sourceforge.net/index.php
+Memonix game Source		https://web.archive.org/web/20071012141500/http://viewizard.com/download.php?forceos=source
+openglad		https://snowstorm.sourceforge.net/cgi-bin/site.cgi?page=openglad
+God of Thunder (see all forks)		https://steamcommunity.com/app/738470/discussions/0/2147595112905646560/
+habitat		https://github.com/Museum-of-Art-and-Digital-Entertainment/habitat
+Lagaru		https://osslugaru.gitlab.io/
+Maelstrom		https://web.archive.org/web/20200721074403/http://hg.libsdl.org/Maelstrom/file/0e3d2ddd9add
+No Gravity		https://sourceforge.net/projects/nogravity/?source=navbar
+planetblupi		https://github.com/blupi-games/planetblupi
+Runesword II		https://sourceforge.net/projects/runesword/
+Seven Kingdoms		https://7kfans.com/?p=96
+Micropolis		http://dev.laptop.org/git/projects/micropolis-activity
+soldat		https://github.com/soldat/soldat
+Triplane Classic		https://github.com/vranki/triplane
+opentyrian		https://github.com/opentyrian/opentyrian
+Wander (1974)		https://ahopeful.wordpress.com/2015/04/22/wander-1974-a-lost-mainframe-game-is-found/
+Hostile Takeover		https://github.com/spiffcode/hostile-takeover
+zork		https://github.com/devshane/zork
+
+To archive ...
+https://web.archive.org/web/20160616072145/http://www.snappymaria.com/megaball/
+
+Assembly ...
+https://github.com/nnevatie/paybacktime2
+
+For android ...
+https://github.com/initials/SuperLemonadeFactoryOUYA
+
+glitch	(java)		https://web.archive.org/web/20131213073818/http://www.glitchthegame.com/public-domain-game-art/
+
+#I don't tend to work with this source file formats
+Kaiser II	https://web.archive.org/web/20050307040107/http://www.strotmann.de/twiki/bin/view/APG/GameKaiserZwo	
+
+#ryzom uses client-server model, and not interested in this
+
+#warzone 2100 is already in the repos
+
+#sourcecode for memonix is not archived on archive.org
+
+#I could not find the code for
+Gravity Force	at	https://www.gravityforce20.com/
+
+#kroz, arctic-adventure, dark ages, monuments of mars, pharaohs tomb, beyond the titanic, supanova, word wiz is not written in C
+
+#Runesword-ii looks as if it was written in Visual Basic
+
+#soldat is written in pascal not C

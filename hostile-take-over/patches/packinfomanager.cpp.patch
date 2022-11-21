@@ -1,0 +1,11 @@
+--- a/hostile-takeover/mpshared/packinfomanager.cpp	2022-10-19 22:42:46.158859052 +0100
++++ b/hostile-takeover/mpshared/packinfomanager.cpp	2022-10-20 22:16:11.121238253 +0100
+@@ -64,7 +64,7 @@
+     json::JsonObject *obj = builder.End();
+     if (obj == NULL || obj->type() != json::JSONTYPE_MAP) {
+         delete obj;
+-        return false;
++        return NULL;
+     }
+     return (json::JsonMap *)obj;
+ }

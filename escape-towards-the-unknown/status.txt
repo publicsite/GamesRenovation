@@ -1,0 +1,5 @@
+The game builds and works
+
+it will complain about missing fonts, so
+
+in order to run the game you need to cd to the ettu-code-r1730/data/trunk/ directory

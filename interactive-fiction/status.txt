@@ -1,0 +1,12 @@
+adv660 compiles and runs
+adv770-2.07-C-src compiles and runs
+advent_acode compiles and runs
+Adventure2.5 compiles and runs
+chimaera compiles and runs
+crystal compiles and runs
+dinkum-2.14 compiles and runs
+mansion-19.2 compiles and runs
+napoleon-1.02 compiles and runs
+thuria compiles and runs
+
+...the rest I couldn't compile

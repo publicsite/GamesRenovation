@@ -1,0 +1,5 @@
+Got source code to a state in which it compiles.
+
+Lots of dodgy code.
+
+Segmentation Fault when running wasn't surprising.

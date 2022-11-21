@@ -1,0 +1,20 @@
+--- a/etw-3.6/myiff.c	2008-05-07 10:57:45.000000000 +0100
++++ b/etw-3.6/myiff.c	2022-10-20 02:15:18.107465715 +0100
+@@ -38,7 +38,7 @@
+         } else
+             return 1L;
+     } else {
+-        D(bug("Stream !=IFFF_READ non implementato!\n"));
++        printf("Stream !=IFFF_READ non implementato!\n");
+         return 1;
+     }
+ }
+@@ -49,7 +49,7 @@
+     uint32_t temp;
+ 
+     if (control != IFFPARSE_SCAN) {
+-        D(bug("ParseIFF!=IFFPARSE_SCAN non implementato!\n"));
++        printf("ParseIFF!=IFFPARSE_SCAN non implementato!\n");
+         return 1L;
+     }
+ 

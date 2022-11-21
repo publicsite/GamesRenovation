@@ -1,0 +1,3 @@
+The game compiles and almost runs, although I could not load any scenarios.
+
+The scenarios also have a clause in their licence against commercial use.

@@ -1,0 +1,14 @@
+--- a/etw-3.6/include/mydebug.h	2007-10-14 22:53:26.000000000 +0100
++++ b/etw-3.6/include/mydebug.h	2022-10-20 01:57:02.356886902 +0100
+@@ -9,11 +9,5 @@
+     #define D(x)
+ #endif
+ 
+-#ifndef bug
+-    #define bug kprintf 
+-    void kprintf(char *fmt,...);
+-    #define D(x) x
+-#endif
+-
+ #endif
+ 

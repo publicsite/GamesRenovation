@@ -1,0 +1,3 @@
+game compiles ok and works.
+
+looks as if it needs a 16-bit display on the xserver?

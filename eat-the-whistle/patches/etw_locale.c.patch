@@ -1,0 +1,70 @@
+--- a/etw-3.6/etw_locale.c	2008-05-07 11:10:49.000000000 +0100
++++ b/etw-3.6/etw_locale.c	2022-10-20 02:12:01.909570918 +0100
+@@ -538,7 +538,7 @@
+     strcat(buffer,catalog);
+ 
+     if((f=fopen(buffer,"rb")))     {
+-        D(bug("Found language file %s...\n",buffer));
++        printf("Found language file %s...\n",buffer);
+ 
+         if ((cat=(struct MyCatalog *)malloc(sizeof(struct MyCatalog))))    {
+             int l,offset=0,t;
+@@ -566,7 +566,7 @@
+             }
+ 
+             if (feof(f))    {
+-                D(bug("Chunk not found!\n"));
++                printf("Chunk not found!\n");
+                 goto fallback;
+             }
+ 
+@@ -575,7 +575,7 @@
+             fread(buffer,l,1,f);
+ 
+             if (stricmp(lang,buffer)) {
+-                D(bug("Error, language and catalog don't match!\n"));
++                printf("Error, language and catalog don't match!\n");
+                 goto fallback;
+             }
+ 
+@@ -585,7 +585,7 @@
+             }
+ 
+             if(feof(f))    {
+-                D(bug("Chunk non trovato!\n"));
++                printf("Chunk non trovato!\n");
+                 goto fallback;
+             }
+ 
+@@ -595,7 +595,7 @@
+ 
+             cat->offsetfirst=ftell(f);
+ 
+-            D(bug("Catalog length: %ld bytes\n",clen));
++            printf("Catalog length: %ld bytes\n",clen);
+ 
+             while(clen>offset&&!feof(f)) {
+                 fread(&id, 4, 1, f);
+@@ -623,19 +623,19 @@
+                 }
+             }
+ 
+-            D(bug("Found %ld language strings in catalog...\n",cat->strings));
++            printf("Found %ld language strings in catalog...\n",cat->strings);
+ 
+             return cat;
+         }
+         else {
+ fallback:
+-            D(bug("Not an IFF catalog!\n"));
++            printf("Not an IFF catalog!\n");
+             fclose(f);
+             return NULL;
+         }
+     }
+     else {
+-        D(bug("*** %s not found, using builtin language.\n",buffer));
++        printf("*** %s not found, using builtin language.\n",buffer);
+         return NULL;
+     }
+ }

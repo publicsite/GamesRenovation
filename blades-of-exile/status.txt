@@ -1,0 +1,3 @@
+The game compiles and runs ok.
+
+You need to make the directory /home/<user>/.config/openboe/blades/Scenarios and copy the scenarios into it

@@ -1,0 +1,460 @@
+--- a/etw-3.6/etw.c	2008-05-07 11:10:49.000000000 +0100
++++ b/etw-3.6/etw.c	2022-10-20 03:00:41.364840185 +0100
+@@ -5,6 +5,9 @@
+ #include "highdirent.h"
+ #include "sound.h"
+ 
++#define WINDOW_WIDTH 640
++#define WINDOW_HEIGHT 480
++
+ #if defined(LINUX) || defined(SOLARIS_X86)
+ #include <gtk/gtk.h>
+ #include <unistd.h>
+@@ -33,354 +36,57 @@
+ struct SoundInfo *music = NULL;
+ char *TEMP_DIR, *HIGH_FILE, *CONFIG_FILE, *RESULT_FILE;
+ 
+-void PlayMenuMusic(void)
+-{
+-    char buffer[120];
+-
+-    if (!menu_music || music_playing || no_sound)
+-        return;
+-
+-
+-    sprintf(buffer, "+.music/back%d.wav" /*-*/ , RangeRand(NUMERO_LOOPS));
+-
+-    D(bug("Loading %s as menu music...\n" /*-*/ , buffer));
+-
+-    if (music) {
+-        FreeSound(music);
+-        music = NULL;
+-    }
+-
+-    if ((music = LoadSound(buffer))) {
+-        music_channel = PlayBackSound(music);
+-
+-        if (music_channel >= 0)
+-            music_playing = TRUE;
+-    }
+-}
+-
+-void StopMenuMusic(void)
+-{
+-    if (music_playing && music_channel >= 0 && !no_sound) {
+-        extern struct SoundInfo *busy[];
+-
+-        D(bug("Stopping menu music on channel %d...\n" /*-*/, music_channel ));
+-        SDL_LockAudio();
+-        busy[music_channel] = NULL;
+-// sblocco il canale            
+-        SDL_UnlockAudio();
+-        music_playing = FALSE;
+-        music_channel = -1;
+-    }
+-}
+-
+-BOOL LoadBack(void)
+-{
+-    gfx_t *background;
+-    char buffer[120];
+-
+-    sprintf(buffer, "menugfx/back%d.gfx" /*-*/ ,
+-            RangeRand(NUMERO_SFONDI));
+-
+-    if ((background = LoadGfxObject(buffer, Pens, NULL))) {
+-        if (background->width != WINDOW_WIDTH
+-            || background->height != WINDOW_HEIGHT)
+-            ScaleGfxObj(background, back);
+-        else
+-            BltGfxObj(background, 0, 0, back, 0, 0, WINDOW_WIDTH,
+-                      WINDOW_HEIGHT, bitmap_width);
+-
+-        FreeGfxObj(background);
+-        arcade_back = FALSE;
+-        return TRUE;
+-    }
+-
+-    return FALSE;
+-}
+-
+-void LoadArcadeGfx(void)
+-{
+-    int i;
+-    char buffer[50];
+-
+-    for (i = 0; i < ARCADE_TEAMS + 1; i++) {
+-        sprintf(buffer, "menugfx/arcade%d.gfx", i);
+-        arcade_gfx[i] = LoadGfxObject(buffer, Pens, NULL);
+-    }
+-}
+-
+-
+-BOOL LoadArcadeBack(void)
+-{
+-    gfx_t *background;
+-
+-    if ((background =
+-        LoadGfxObject("menugfx/worldmap.gfx" /*-*/ , Pens, NULL))) {
+-        if (background->width != WINDOW_WIDTH
+-            || background->height != WINDOW_HEIGHT)
+-            ScaleGfxObj(background, back);
+-        else
+-            BltGfxObj(background, 0, 0, back, 0, 0, WINDOW_WIDTH,
+-                      WINDOW_HEIGHT, bitmap_width);
+-
+-        FreeGfxObj(background);
+-        arcade_back = TRUE;
+-        return TRUE;
+-    }
+-
+-    return FALSE;
+-}
+-
+ void FreeMenuStuff(void)
+ {
+-    D(bug("Freeing logos...\n"));
++    printf("Freeing logos...\n");
+ 
+ /*
+     Non dovrebbe servire...
+ 
+     .... e invece sembra esser necessario...
+ */
+-    if (menu_music && music_playing)
+-        StopMenuMusic();
+-
+-    if (logos) {
+-        FreeAnimObj(logos);
+-        logos = NULL;
+-    }
+-
+-    if (symbols) {
+-        FreeAnimObj(symbols);
+-        symbols = NULL;
+-    }
+ 
+-    D(bug("Freeing background picture...\n"));
++    printf("Freeing background picture...\n");
+ 
+     if (back) {
+         free(back);
+         back = NULL;
+     }
+ 
+-    D(bug("Freeing main bitmap...\n"));
+-
+-    free(main_bitmap);
+-
+-    D(bug("Freeing fonts...\n"));
+-    FreeMenuFonts();
+-
+-    D(bug("Freeing sounds...\n"));
+-    LiberaSuoniMenu();
+-
+-    D(bug("Begin: FreeGraphics()!\n"));
+-    FreeGraphics();
+-    D(bug("End: FreeGraphics()!\n"));
+-
+-    if (public_screen && Colors > 0) {
+-//              int i;
+-
+-        D(bug("Freeing pens!\n"));
+-
+-/*        for(i=0;i<Colors;i++)
+-            os_releasepen(Pens[i]);
+-        */
++    printf("Begin: FreeGraphics()!\n");
+ 
+-    } else
+-        FreeIFFPalette();
++    printf("End: FreeGraphics()!\n");
+ 
+-    if (music) {
+-        FreeSound(music);
+-        music = NULL;
+-    }
+ }
+ 
+ BOOL LoadMenuStuff(void)
+ {
+-    if (firsttime) {
+-        save_back = FALSE;        /* Non mi interessa conservare gli sfondi */
+-        use_clipping = FALSE;    /* Voglio vedere gli omini parzialmente fuori dallo schermo */
+-        use_window = TRUE;
+ 
+-    }
+-
+-    D(bug("Palette allocation...\n"));
++    printf("Palette allocation...\n");
+ 
+     {
+         int i;
++	int Pens[16];
+ 
+-        wanted_width = bitmap_width = WINDOW_WIDTH;
+-        wanted_height = bitmap_height = WINDOW_HEIGHT;
+-
+-        use_remapping = FALSE;
++        int wanted_width = bitmap_width = WINDOW_WIDTH;
++        int wanted_height = bitmap_height = WINDOW_HEIGHT;
+ 
+         for (i = 0; i < 16; i++)
+             Pens[i] = i;
+     }
+ 
+-    D(bug("Menu palette remapped.\n" /*-*/ ));
++    printf("Menu palette remapped.\n" /*-*/ );
+ 
+ // ModifyIDCMP
+ 
+-    D(bug("Opening game window...\n"));
+-
+-    ClipX = WINDOW_WIDTH - 1;
+-    ClipY = WINDOW_HEIGHT - 1;
+-
+-    D(bug("Anim System initialization...\n" /*-*/ ));
+-
+-    if (!InitAnimSystem()) {
+-        D(bug("Error in InitAnimSystem!\n" /*-*/ ));
+-        return FALSE;
+-    }
+-
+-    if (!(main_bitmap = malloc(WINDOW_WIDTH * WINDOW_HEIGHT))) {
+-        FreeGraphics();
+-    } else
+-        bitmap_width = WINDOW_WIDTH;
+-
+-    if (firsttime) {
+-        LoadPLogo("newgfx/hurricane" /*-*/ );
+-        os_delay(50);
+-
+-        if (!public_screen)
+-            os_delay(40);
+-    }
+-
+-    D(bug("Opening fonts...\n" /*-*/ ));
+-
+-    if (!InitMenuFonts()) {
+-        free(main_bitmap);
+-        FreeGraphics();
+-        return FALSE;
+-    }
+-
+-    D(bug("Sound system initialization...\n" /*-*/ ));
+-
+-    if (!no_sound) {
+-        FILE *fh;
+-
+-        if (firsttime) {
+-            if (!(fh = fopen("intro/intro.anim" /*-*/ , "r")))
+-                nointro = TRUE;
+-            else
+-                fclose(fh);
++    printf("Opening game window...\n");
+ 
+-            if(!InitSoundSystem()) {
+-                free(main_bitmap);
+-                FreeMenuFonts();
+-                FreeGraphics();
+-                return FALSE;
+-            }
+-        }
++    int ClipX = WINDOW_WIDTH - 1;
++    int ClipY = WINDOW_HEIGHT - 1;
+ 
+-        if (!CaricaSuoniMenu()) {
+-            FreeSoundSystem();
+-            free(main_bitmap);
+-            FreeMenuFonts();
+-            FreeGraphics();
+-            return FALSE;
+-        }
+-    }
+ // Creo tre RP per evitare di usare SetAPen che e' molto lenta.
+ 
+-
+-    D(bug("Main bitmap creation\n" /*-*/ ));
+-
+-
+-    if (firsttime) {
+-        D(bug("Loading logo...\n" /*-*/ ));
+-
+-        LoadPLogo("gfx/etwlogo" /*-*/ );
+-
+-        if (!nointro)
+-            Intro();
+-        else
+-            os_delay(50);
+-
+-        StoreButtonList();
+-    }
+-
+-    UpdateButtonList();
+-
+-    if (firsttime) {
+-        init_joy_config();
+-
+-#if 0
+-        D(bug("Loading logo N.2\n" /*-*/ ));
+-
+-        if (nointro)
+-            rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1,
+-                     WINDOW_HEIGHT - 1, Pens[P_NERO], bitmap_width);
+-
+-        ScreenSwap();
+-
+-        LoadMenuLogo("gfx/etwlogo" /*-*/ );
+-#endif
+-        D(bug("Updating scores...\n"));
+-        LoadScores();
+-
+-        os_delay(50);
+-
+-        if (!public_screen)
+-            os_delay(50);
+-
+-//              GriddedWipe(0,NULL);
+-
+-        rectfill(main_bitmap, 0, 0, WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1,
+-                 Pens[P_NERO], bitmap_width);
+-
+-        ScreenSwap();
+-
+-        if (last_obj)
+-            FreeGfxObj(last_obj);
+-    }
+-
+-    if (!(back = malloc(WINDOW_WIDTH * WINDOW_HEIGHT))) {
+-        free(main_bitmap);
+-        FreeMenuFonts();
+-        FreeGraphics();
+-    }
+-
+-    D(bug("Palette reinitialization\n" /*-*/ ));
+-
+-    if (!public_screen) {
+-        int i;
+-
+-        if (firsttime) {
+-            for (i = 0; i < 16; i++)
+-                Pens[i] = i;
+-
+-            Colors = 0;
+-
+-            FreeIFFPalette();
+-        }
+-
+-        if (!LoadIFFPalette("gfx/eat16menu.col" /*-*/ )) {
+-            D(bug("Unable to load the menu palette!\n" /*-*/ ));
+-            free(main_bitmap);
+-            free(back);
+-            FreeMenuFonts();
+-            FreeGraphics();
+-            return FALSE;
+-        }
+-//      LoadGfxObjPalette("menugfx/arcade0.gfx"/*-*/); Prova x quando era buggata l'altra chiamata
+-
+-        D(bug("Loaded menu palette.\n" /*-*/ ));
+-    }
+-
+-    if ((logos = LoadAnimObject("menugfx/clips.obj" /*-*/ , Pens))) {
+-        if (LoadBack()) {
+-            if ((symbols =
+-                LoadAnimObject("menugfx/simboli.obj" /*-*/ , Pens))) {
+-
+-                D(bug
+-                  ("InitStuff() OK...\n" /*-*/ ));
+-                firsttime = FALSE;
+-
+-                PlayMenuMusic();
+-
+-                return TRUE;
+-            }
+-            D(bug("Error in symbols loading...\n" /*-*/ ));
+-        }
+-    }
++    printf("Palette reinitialization\n" /*-*/ );
+ 
+     FreeMenuStuff();
+ 
+@@ -421,7 +127,7 @@
+ #else
+             strcpy(buff, dir);
+ #endif
+-            D(bug("Setting default directory to %s", buff));
++            printf("Setting default directory to %s", buff);
+ 
+             chdir(buff);
+         }
+@@ -456,15 +162,6 @@
+ 
+ /* Fix of an old language catalog bug... */
+ 
+-    {
+-        int i;
+-
+-        for (i = 0; i < 8; i++) {
+-            if (wcp[32 * 5 + 1 + i * 5].Testo == NULL)
+-                wcp[32 * 5 + 1 + i * 5].Testo = "GC" /*-*/ ;
+-        }
+-    } 
+-
+ #if defined(LINUX) || defined(SOLARIS_X86)
+     /* Find data and temporary directories */
+     {
+@@ -517,17 +214,10 @@
+     CONFIG_FILE = "t/thismatch";
+     RESULT_FILE = "t/result";
+ #endif
+-    
+-    read_menu_config();
+-
+-    LoadTeams(TEAMS_DIR "default" /*-*/ );
+ 
+     /* AC: I put here the load of keyboard configuration files
+      * 
+      */
+-    LoadKeyDef(0,KEY_RED_FILE);
+-    LoadKeyDef(1,KEY_BLUE_FILE);
+-
+ //      EnableReqs();
+ 
+     /* AC: Under MacOS X and SDL 1.2.7 seems that if there aren't any koystick connected to the
+@@ -543,35 +233,7 @@
+ 
+     atexit(SDL_Quit);
+ 
+-    OpenMenuScreen();
+-
+-    if (screen) {
+-        if (LoadMenuStuff()) {
+-            
+-            D(bug("Starting ChangeMenu...\n"));
+-
+-            os_start_audio();
+-
+-            ChangeMenu(0);
+-
+-            D(bug("Entering main loop...\n"));
+-            while (HandleMenuIDCMP());
+-
+-            if (audio_to_fast) {
+-                D(bug("Delete Audio2Fast...\n" /*-*/ ));
+-                DeleteAudio2Fast();
+-            }
+-
+-            D(bug("Start: FreeMenuStuff...\n" /*-*/ ));
+-            FreeMenuStuff();
+-            D(bug("End: FreeMenuStuff()...\n" /*-*/ ));
+-        }
+-
+-        if(SoundStarted())
+-            FreeSoundSystem();
+-    }
+-
+-    D(bug("Program exited cleanly!\n"));
++    printf("Program exited cleanly!\n");
+ 
+     return 0;
+ }
