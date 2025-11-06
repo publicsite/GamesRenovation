@@ -1,5 +1,8 @@
 #!/bin/sh
 
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir build
 cd build
 
@@ -29,3 +32,5 @@ sed -i "s#c++14#c++17#g" SConstruct
 #find . -type f -exec sed -i "s#tgui::Gui#tgui::gui#g" {} \;
 
 scons CXXFLAGS="-I${tgui_dir}/include" LINKFLAGS="-L${tgui_dir}/build/lib"
+
+umask "${OLD_UMASK}"
