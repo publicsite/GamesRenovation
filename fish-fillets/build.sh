@@ -1,5 +1,8 @@
 #!/bin/sh
 
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir build
 
 cd build
@@ -37,3 +40,5 @@ autoreconf -vfi
 ./configure --with-lua=/usr CXXFLAGS="-I/usr/include/SDL -fpermissive"
 
 make
+
+umask "${OLD_UMASK}"
