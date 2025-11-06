@@ -1,4 +1,8 @@
 #!/bin/sh
+
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir build
 cd build
 tar -xf ../Download/ETW-3.6-src.tar.gz
@@ -132,3 +136,5 @@ sed -i "s#menu_##g" Makefile.linux
 sed -i "s#generic_video.odata.o##g" Makefile.linux
 sed -i "s#menu_velocita_g.o ##g" Makefile.linux
 make
+
+umask "${OLD_UMASK}"
