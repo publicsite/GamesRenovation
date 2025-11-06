@@ -1,5 +1,8 @@
 #!/bin/sh
 
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir build
 cp -a Download/cylindrix build/
 
@@ -10,3 +13,5 @@ sed -i "s#<= 0#= NULL#g" src/object.cpp
 sed -i "s#<= 0#= NULL#g" src/pylon.cpp
 
 make
+
+umask "${OLD_UMASK}"
