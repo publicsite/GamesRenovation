@@ -1,5 +1,8 @@
 #!/bin/sh
 
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir build
 
 cd build
@@ -33,3 +36,5 @@ PATH="$PATH:$clonkdir" make
 cd $clonkdir
 
 ln -s ../../content-*/packed/lc_content.zip
+
+umask "${OLD_UMASK}"
