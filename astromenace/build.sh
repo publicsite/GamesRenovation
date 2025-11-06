@@ -1,5 +1,8 @@
 #!/bin/sh
 
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir build
 
 cp -a Download/astromenace build
@@ -16,3 +19,4 @@ cmake .. -DCMAKE_INSTALL_PREFIX=$PWD/../bin -DCMAKE_BUILD_TYPE=Release -DDEPS_PA
 
 cmake --build .
 
+umask "${OLD_UMASK}"
