@@ -1,4 +1,8 @@
 #!/bin/sh
+
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir Download
 cd Download
 
@@ -65,3 +69,5 @@ sleep 1
 wget "http://www.ifarchive.org/if-archive/games/source/worldsrc.zip"
 sleep 1
 wget "https://gist.githubusercontent.com/boatilus/11305304/raw/4824a56e092debd0c3bd440f1a47bcced46e92e9/ltoa.c"
+
+umask "${OLD_UMASK}"
