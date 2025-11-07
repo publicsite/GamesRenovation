@@ -1,5 +1,8 @@
 #!/bin/sh
 
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir build
 
 unzip Download/GOTsource.zip -d build/
@@ -26,3 +29,5 @@ done
 IFS="$oldIFS"
 
 CFLAGS="-I/usr/include/wine/wine/windows -I/usr/include/wine/wine/msvcrt" LDFLAGS="-lwine" $thepwd/autobuilder_c_v1.sh
+
+umask "${OLD_UMASK}"
