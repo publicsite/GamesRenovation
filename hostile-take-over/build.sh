@@ -1,5 +1,8 @@
 #!/bin/sh
 
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir build
 
 cp -a Download/hostile-takeover build/
@@ -24,3 +27,5 @@ sed -i "s#LDFLAGS=#LDFLAGS=-lm#g" makefile
 ./install.sh
 
 make
+
+umask "${OLD_UMASK}"
