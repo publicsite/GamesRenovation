@@ -1,5 +1,8 @@
 #!/bin/sh
 
+OLD_UMASK="$(umask)"
+umask 0022
+
 dirtolower(){
 #rename files all to lower case
 oldIFS="$IFS"
@@ -374,3 +377,5 @@ if [ -d build ]; then
 		fi
 	fi
 fi
+
+umask "${OLD_UMASK}"
