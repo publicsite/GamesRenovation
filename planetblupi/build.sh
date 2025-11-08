@@ -1,5 +1,8 @@
 #!/bin/sh
 
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir build
 
 cp -a Download/planetblupi build/
@@ -30,3 +33,5 @@ cd build
 cmake ..
 
 make
+
+umask "${OLD_UMASK}"
