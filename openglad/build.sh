@@ -1,5 +1,8 @@
 #!/bin/sh
 
+OLD_UMASK="$(umask)"
+umask 0022
+
 mkdir build
 cd build
 
@@ -12,3 +15,5 @@ premake4 gmake
 sed -i "s#INCLUDES  +=#INCLUDES  += -I/usr/include/SDL2#g" openglad.make
 
 make
+
+umask "${OLD_UMASK}"
